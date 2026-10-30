@@ -26,7 +26,13 @@ describe('indent Python:', function()
     run:new_line('basic_blocks.py', { on_line = 10, text = 'x += 1', indent = 8 })
     run:new_line('basic_blocks.py', { on_line = 14, text = 'x += 1', indent = 8 })
     run:new_line('basic_collections.py', { on_line = 3, text = '4,', indent = 4 })
+    run:new_line('comprehensions.py', { on_line = 4, text = 'x', indent = 0 })
     run:new_line('comprehensions.py', { on_line = 8, text = 'if x != 2', indent = 4 })
+    -- a new line after a statement that ends with a comprehension must keep
+    -- the block indentation, even when that statement is the last one in the block
+    for _, line in ipairs({ 2, 5, 8, 11 }) do
+      run:new_line('line_after_comprehension.py', { on_line = line, text = 'x', indent = 4 })
+    end
     run:new_line('control_flow.py', { on_line = 2, text = 'x = 4', indent = 4 })
     run:new_line('control_flow.py', { on_line = 4, text = 'x = 4', indent = 4 })
     run:new_line('control_flow.py', { on_line = 6, text = 'x = 4', indent = 4 })

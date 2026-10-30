@@ -164,17 +164,25 @@
   .
   (#lua-match? @indent.branch "^elif"))
 
-(generator_expression
-  ")" @indent.end)
+; Only treat the closing bracket as an @indent.end when it is on a line of its
+; own. For a single-line comprehension (e.g. `x = [i for i in y]`) the bracket
+; merely ends a statement, and treating it as an @indent.end makes the next
+; line lose the indentation of the enclosing block.
+((generator_expression
+  ")" @indent.end) @_comprehension
+  (#lua-match? @_comprehension "\n%s*%)$"))
 
-(list_comprehension
-  "]" @indent.end)
+((list_comprehension
+  "]" @indent.end) @_comprehension
+  (#lua-match? @_comprehension "\n%s*%]$"))
 
-(set_comprehension
-  "}" @indent.end)
+((set_comprehension
+  "}" @indent.end) @_comprehension
+  (#lua-match? @_comprehension "\n%s*%}$"))
 
-(dictionary_comprehension
-  "}" @indent.end)
+((dictionary_comprehension
+  "}" @indent.end) @_comprehension
+  (#lua-match? @_comprehension "\n%s*%}$"))
 
 (tuple_pattern
   ")" @indent.end)
